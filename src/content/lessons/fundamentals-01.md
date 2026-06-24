@@ -3,7 +3,7 @@ track: fundamentals
 order: 1
 title: Reading Code Is the Real Skill
 summary: You were taught to write code. The job is mostly reading it, and AI made that more true, not less.
-publishedAt: 2026-06-24
+publishedAt: 2026-06-23
 readingMinutes: 5
 prerequisites: []
 quiz:
