@@ -11,7 +11,7 @@ const quizItem = z.object({
 const lessons = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/lessons' }),
   schema: z.object({
-    track: z.enum(['fundamentals', 'patterns', 'algorithms', 'architecture', 'with-ai']),
+    track: z.enum(['fundamentals', 'patterns', 'design-patterns', 'algorithms', 'architecture', 'with-ai']),
     order: z.number().int().positive(),
     title: z.string(),
     summary: z.string(),

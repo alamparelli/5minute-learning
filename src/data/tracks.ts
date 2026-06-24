@@ -1,6 +1,7 @@
 export type TrackKey =
   | 'fundamentals'
   | 'patterns'
+  | 'design-patterns'
   | 'algorithms'
   | 'architecture'
   | 'with-ai';
@@ -24,10 +25,17 @@ export const tracks: Record<TrackKey, Track> = {
     color: '#ff5a3c',
   },
   patterns: {
-    label: 'Patterns & Principles',
-    tagline: 'Reusable answers to recurring design problems.',
+    label: 'Principles & Discipline',
+    tagline: 'The rules that keep code honest.',
     description:
-      'SOLID, DRY, the patterns worth knowing, and the discipline to not overuse them.',
+      'SOLID, DRY, coupling and cohesion, and the judgment to know when a rule stops earning its keep.',
+    color: '#ff5a3c',
+  },
+  'design-patterns': {
+    label: 'Design Patterns',
+    tagline: 'Named answers to recurring design problems.',
+    description:
+      'One concrete pattern at a time: what it is for, a real use, the tradeoff, and when it is overkill. The Gang of Four catalogue first, then the modern patterns you actually meet.',
     color: '#ff5a3c',
   },
   algorithms: {
@@ -56,6 +64,7 @@ export const tracks: Record<TrackKey, Track> = {
 export const trackOrder: TrackKey[] = [
   'fundamentals',
   'patterns',
+  'design-patterns',
   'algorithms',
   'architecture',
   'with-ai',
