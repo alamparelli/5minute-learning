@@ -3,6 +3,7 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 import '../styles/global.css';
 import { withBase } from '../lib/url.ts';
+import { tracks, trackOrder } from '../data/tracks.ts';
 
 interface Props {
   title?: string | null;
@@ -48,6 +49,10 @@ const desc =
     </main>
 
     <footer class="site-footer">
+      <nav class="footer-nav">
+        <a href={withBase('/')}>Home</a>
+        {trackOrder.map((key) => <a href={withBase(`/tracks/${key}`)}>{tracks[key].label}</a>)}
+      </nav>
       <p><b>Five minutes a day.</b> The AI writes the code; you build the judgment.</p>
     </footer>
 

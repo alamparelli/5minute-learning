@@ -14,6 +14,13 @@ const { lesson } = Astro.props;
 const { Content } = await render(lesson);
 const track = tracks[lesson.data.track as TrackKey];
 const num = String(lesson.data.order).padStart(2, '0');
+
+const trackLessons = (await getCollection('lessons'))
+  .filter((l) => l.data.track === lesson.data.track)
+  .sort((a, b) => a.data.order - b.data.order);
+const idx = trackLessons.findIndex((l) => l.id === lesson.id);
+const prev = idx > 0 ? trackLessons[idx - 1] : null;
+const next = idx < trackLessons.length - 1 ? trackLessons[idx + 1] : null;
 ---
 
 <Base title={lesson.data.title} description={lesson.data.summary}>
@@ -34,5 +41,31 @@ const num = String(lesson.data.order).padStart(2, '0');
     </div>
 
     {lesson.data.quiz.length > 0 && <Quiz quiz={lesson.data.quiz} lessonId={lesson.id} />}
+
+    <nav class="lesson-nav">
+      {
+        prev ? (
+          <a class="lesson-nav__item lesson-nav__prev" href={withBase(`/lessons/${prev.id}`)}>
+            <span class="lesson-nav__dir">Previous</span>
+            <span class="lesson-nav__title">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span class="lesson-nav__item" />
+        )
+      }
+
+      <a class="lesson-nav__home" href={withBase(`/tracks/${lesson.data.track}`)}>{track.label}</a>
+
+      {
+        next ? (
+          <a class="lesson-nav__item lesson-nav__next" href={withBase(`/lessons/${next.id}`)}>
+            <span class="lesson-nav__dir">Next</span>
+            <span class="lesson-nav__title">{next.data.title}</span>
+          </a>
+        ) : (
+          <span class="lesson-nav__item" />
+        )
+      }
+    </nav>
   </article>
 </Base>
