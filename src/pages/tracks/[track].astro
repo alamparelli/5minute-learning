@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import LessonCard from '../../components/LessonCard.astro';
+import { getCollection } from 'astro:content';
+import { tracks, trackOrder, type TrackKey } from '../../data/tracks.ts';
+import { withBase } from '../../lib/url.ts';
+
+export async function getStaticPaths() {
+  return trackOrder.map((track) => ({ params: { track } }));
+}
+
+const { track } = Astro.params;
+const meta = tracks[track as TrackKey];
+const trackIndex = trackOrder.indexOf(track as TrackKey) + 1;
+const lessons = (await getCollection('lessons'))
+  .filter((l) => l.data.track === track)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title={meta.label} description={meta.description}>
+  <section class="track-head">
+    <a class="back" href={withBase('/')}>&larr; The Index</a>
+    <span class="kicker">Track {String(trackIndex).padStart(2, '0')}</span>
+    <h1>{meta.label}</h1>
+    <p class="lede">{meta.description}</p>
+  </section>
+
+  <section class="section">
+    {lessons.length === 0 && <p class="empty">First lesson lands soon.</p>}
+    <div class="rows">
+      {lessons.map((l) => <LessonCard lesson={l} />)}
+    </div>
+  </section>
+</Base>

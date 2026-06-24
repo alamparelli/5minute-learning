@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import Quiz from '../../components/Quiz.astro';
+import { getCollection, render } from 'astro:content';
+import { tracks, type TrackKey } from '../../data/tracks.ts';
+import { withBase } from '../../lib/url.ts';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  return lessons.map((lesson) => ({ params: { slug: lesson.id }, props: { lesson } }));
+}
+
+const { lesson } = Astro.props;
+const { Content } = await render(lesson);
+const track = tracks[lesson.data.track as TrackKey];
+const num = String(lesson.data.order).padStart(2, '0');
+---
+
+<Base title={lesson.data.title} description={lesson.data.summary}>
+  <article class="lesson">
+    <header class="lesson-head">
+      <a class="track-tag" href={withBase(`/tracks/${lesson.data.track}`)}>
+        {track.label} &middot; No. {num}
+      </a>
+      <h1>{lesson.data.title}</h1>
+      <p class="lesson-sub">{lesson.data.summary}</p>
+      <p class="lesson-meta">{lesson.data.readingMinutes} min read</p>
+    </header>
+
+    <hr class="lesson-rule" />
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {lesson.data.quiz.length > 0 && <Quiz quiz={lesson.data.quiz} lessonId={lesson.id} />}
+  </article>
+</Base>

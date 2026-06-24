@@ -1,0 +1,89 @@
+---
+interface QuizItem {
+  q: string;
+  options: string[];
+  answer: number;
+  why: string;
+}
+
+interface Props {
+  quiz: QuizItem[];
+  lessonId: string;
+}
+
+const { quiz, lessonId } = Astro.props;
+---
+
+<section class="quiz" data-lesson-id={lessonId}>
+  <p class="quiz__head">Self-check</p>
+
+  <form class="quiz-form">
+    {
+      quiz.map((item, qi) => (
+        <fieldset class="quiz-q" data-answer={item.answer} data-why={item.why}>
+          <legend>
+            <span class="quiz-n">{String(qi + 1).padStart(2, '0')}</span>
+            {item.q}
+          </legend>
+          {item.options.map((opt, oi) => (
+            <label class="quiz-opt">
+              <input type="radio" name={`q${qi}`} value={oi} />
+              <span>{opt}</span>
+            </label>
+          ))}
+          <p class="quiz-feedback" hidden />
+        </fieldset>
+      ))
+    }
+    <button type="submit" class="quiz-submit">Reveal answers</button>
+  </form>
+
+  <p class="quiz-result" hidden></p>
+</section>
+
+<script>
+  import { markComplete } from '../lib/progress.js';
+
+  document.querySelectorAll('.quiz').forEach((quizEl) => {
+    const lessonId = quizEl.getAttribute('data-lesson-id') || '';
+    const form = quizEl.querySelector('.quiz-form');
+    const result = quizEl.querySelector('.quiz-result');
+    if (!form || !result) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const questions = Array.from(quizEl.querySelectorAll('.quiz-q'));
+      let score = 0;
+
+      questions.forEach((q) => {
+        const answer = Number(q.getAttribute('data-answer'));
+        const why = q.getAttribute('data-why') || '';
+        const chosen = q.querySelector('input:checked');
+        const chosenVal = chosen ? Number(chosen.value) : -1;
+
+        q.querySelectorAll('.quiz-opt').forEach((label, oi) => {
+          label.classList.remove('correct', 'wrong');
+          if (oi === answer) label.classList.add('correct');
+          else if (oi === chosenVal) label.classList.add('wrong');
+        });
+
+        const ok = chosenVal === answer;
+        if (ok) score++;
+
+        const fb = q.querySelector('.quiz-feedback');
+        if (fb) {
+          fb.hidden = false;
+          fb.textContent = (ok ? '✓ ' : '✗ ') + why;
+          fb.classList.toggle('ok', ok);
+        }
+      });
+
+      const total = questions.length;
+      result.hidden = false;
+      result.textContent = `You scored ${score}/${total}. Lesson marked complete. See you tomorrow.`;
+
+      const state = markComplete(lessonId, score, total);
+      document.dispatchEvent(new CustomEvent('progress:updated', { detail: state }));
+    });
+  });
+</script>

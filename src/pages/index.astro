@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import LessonCard from '../components/LessonCard.astro';
+import { getCollection } from 'astro:content';
+import { tracks, trackOrder } from '../data/tracks.ts';
+import { withBase } from '../lib/url.ts';
+
+const lessons = await getCollection('lessons');
+const sorted = [...lessons].sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
+const today = sorted[0];
+const countByTrack = (key: string) => lessons.filter((l) => l.data.track === key).length;
+---
+
+<Base>
+  <section class="hero">
+    <span class="kicker">Daily lessons for working engineers</span>
+    <h1>Five minutes a day to think like an engineer.</h1>
+    <p class="lede">
+      The AI writes the code. You bring the judgment. One short lesson and one quiz a day,
+      across the things that don't go out of date.
+    </p>
+  </section>
+
+  {
+    today && (
+      <section class="section">
+        <p class="section-head">Today</p>
+        <LessonCard lesson={today} featured />
+      </section>
+    )
+  }
+
+  <section class="section">
+    <p class="section-head">The Index</p>
+    <p class="section-note">Start anywhere. Each track is a path you can pick up on day one.</p>
+    <div class="rows">
+      {
+        trackOrder.map((key, i) => (
+          <a class="row" href={withBase(`/tracks/${key}`)}>
+            <span class="row__num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="row__body">
+              <span class="row__name">{tracks[key].label}</span>
+              <span class="row__tagline">{tracks[key].tagline}</span>
+            </span>
+            <span class="row__meta">{countByTrack(key)} {countByTrack(key) === 1 ? 'lesson' : 'lessons'}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    sorted.length > 1 && (
+      <section class="section">
+        <p class="section-head">Recent entries</p>
+        <div class="rows">
+          {sorted.slice(1, 7).map((l) => (
+            <LessonCard lesson={l} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Base>

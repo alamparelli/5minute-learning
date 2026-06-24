@@ -1,0 +1,47 @@
+---
+import { withBase } from '../lib/url.ts';
+import { tracks, type TrackKey } from '../data/tracks.ts';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  lesson: CollectionEntry<'lessons'>;
+  featured?: boolean;
+}
+
+const { lesson, featured = false } = Astro.props;
+const track = tracks[lesson.data.track as TrackKey];
+const num = String(lesson.data.order).padStart(2, '0');
+const href = withBase(`/lessons/${lesson.id}`);
+---
+
+{
+  featured ? (
+    <a class="featured" href={href} data-lesson-id={lesson.id}>
+      <span class="track-tag">{track.label} &middot; No. {num}</span>
+      <h2 class="featured__title">{lesson.data.title}</h2>
+      <p class="featured__summary">{lesson.data.summary}</p>
+      <span class="featured__foot">
+        <span class="btn">
+          Start lesson
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+            <path d="M9.5 1L14.5 6L9.5 11M14 6H1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="meta">
+          {lesson.data.readingMinutes} min read<span class="done-flag" hidden> &middot; done</span>
+        </span>
+      </span>
+    </a>
+  ) : (
+    <a class="row" href={href} data-lesson-id={lesson.id}>
+      <span class="row__num">{num}</span>
+      <span class="row__body">
+        <span class="row__name">{lesson.data.title}</span>
+        <span class="row__tagline">{lesson.data.summary}</span>
+      </span>
+      <span class="row__meta">
+        {lesson.data.readingMinutes} min<span class="done-flag" hidden> &middot; done</span>
+      </span>
+    </a>
+  )
+}

@@ -1,0 +1,83 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
+import '../styles/global.css';
+import { withBase } from '../lib/url.ts';
+
+interface Props {
+  title?: string | null;
+  description?: string;
+}
+
+const { title = null, description } = Astro.props;
+const siteName = '5 Minute Learning';
+const pageTitle = title ? `${title} · ${siteName}` : `${siteName} · think like an engineer`;
+const desc =
+  description ??
+  'Five minutes a day to think like an engineer in the AI era. One short lesson and one quiz, across the things that do not go out of date.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="wordmark" href={withBase('/')}>5min<span class="slash">/</span><span class="light">Learning</span></a>
+      <span class="streak" data-streak hidden>
+        <svg width="13" height="16" viewBox="0 0 13 16" fill="none" aria-hidden="true">
+          <path
+            d="M6.5 0.5C7 3 9 4 9 6.5C9 7.3 8.7 8 8.2 8.5C8.6 7.8 8.5 6.8 8 6.3C8 8 6.8 8.6 6.8 9.8C5.9 9.5 5.5 8.7 5.5 8C4.3 8.8 3.5 10.2 3.5 11.6C3.5 13.6 4.9 15.3 6.8 15.5C9.4 15.5 11.5 13.5 11.5 11C11.5 6.5 7.5 5 6.5 0.5Z"
+            fill="var(--coral)"
+          ></path>
+        </svg>
+        <span><b>0</b>-day streak</span>
+      </span>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p><b>Five minutes a day.</b> The AI writes the code; you build the judgment.</p>
+    </footer>
+
+    <script>
+      import { getState, getStreak } from '../lib/progress.js';
+
+      function paint() {
+        const { completed } = getState();
+
+        const chip = document.querySelector('[data-streak]');
+        if (chip) {
+          const s = getStreak();
+          if (s > 0) {
+            chip.hidden = false;
+            const b = chip.querySelector('b');
+            if (b) b.textContent = String(s);
+          }
+        }
+
+        document.querySelectorAll('[data-lesson-id]').forEach((el) => {
+          const id = el.getAttribute('data-lesson-id');
+          if (id && completed[id]) {
+            el.classList.add('is-done');
+            el.querySelectorAll('.done-flag').forEach((d) => (d.hidden = false));
+          }
+        });
+      }
+
+      paint();
+      document.addEventListener('progress:updated', paint);
+    </script>
+  </body>
+</html>
