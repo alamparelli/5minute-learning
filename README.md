@@ -1,61 +1,26 @@
 # 5 Minute Learning
 
-Five minutes a day to think like an engineer in the AI era. One short lesson and one quiz a day, across the things that don't go out of date. Language-agnostic, judgment-first.
+**Five minutes a day to think like an engineer.** A daily micro-course on the things that do not go out of date: fundamentals, design patterns, principles, architecture, algorithms, and how to work with AI.
+
+Live: https://alamparelli.github.io/5minute-learning/
 
 > The AI writes the code. You build the judgment.
 
-## Tracks
+## Why this exists
 
-Perpetual drip, organised into five tracks you can start on day one and read in order:
+AI now writes a large share of the code. That does not make engineering judgment less important, it makes it the whole job. The scarce skill is no longer typing a solution, it is deciding whether a solution is correct, whether it fits, and what it will do under pressure. That skill is language-agnostic, and it compounds.
 
-- **Fundamentals**: reading code, debugging, naming, abstraction, complexity
-- **Patterns & Principles**: SOLID, DRY, the patterns worth knowing
-- **Algorithms**: complexity you can feel, the core structures, the recurring patterns
-- **Architecture & System Design**: boundaries, coupling, dependencies, state
-- **Working With AI**: specs, prompting, reviewing generated code, when to say no
+So this is a deliberately small habit: one short lesson and one quiz a day, about the timeless layer underneath any language or framework. It is built for the developer of tomorrow, the one who works alongside AI and is paid for taste and judgment rather than keystrokes. No single language, no framework of the month: just the decisions that keep mattering.
+
+It is also a personal learning project. I built it partly to sharpen my own grasp of patterns and principles. Writing, reviewing, and quizzing each lesson is the point as much as reading it. The promise to the reader is simple: five minutes, every day, on something that will still be true in ten years.
+
+## What it is
+
+- One lesson plus one multiple-choice quiz per day, around a five minute read.
+- Five tracks you can start on day one, in any order: Fundamentals, Patterns & Principles, Algorithms, Architecture & System Design, Working With AI.
+- Language-agnostic. It teaches decisions, not syntax.
+- Progress and a daily streak are kept in your browser. No accounts, no tracking.
 
 ## How it works
 
-- One lesson + one multiple-choice quiz per day (~5 min read).
-- Progress and a daily streak are kept client-side in `localStorage`. No accounts, no backend.
-- A lesson is one Markdown file in `src/content/lessons/` whose frontmatter carries its track, order, and quiz.
-
-## Stack
-
-[Astro](https://astro.build) static site, content collections, deployed to GitHub Pages.
-
-```bash
-npm install
-npm run dev      # local dev at /5minute-learning
-npm run build    # static build to dist/
-npm run preview  # serve the build
-```
-
-## Authoring a lesson
-
-Add `src/content/lessons/<track>-<NN>.md`:
-
-```yaml
----
-track: patterns          # fundamentals | patterns | algorithms | architecture | with-ai
-order: 3                 # position within the track
-title: Dependency Inversion Without the Jargon
-summary: One sentence the card and the meta description both use.
-publishedAt: 2026-06-25
-readingMinutes: 5
-prerequisites: [patterns-01, patterns-02]
-quiz:
-  - q: The question.
-    options: [A, B, C, D]
-    answer: 2              # zero-based index of the correct option
-    why: Explanation shown after the reader answers.
----
-
-800 to 1000 words of body. The 5-minute target keeps it honest.
-```
-
-Track outlines (the backlog the daily generator pulls from) live in `src/data/tracks.ts`.
-
-## House style
-
-No long dashes (em or en) anywhere in lesson copy or UI text. Use commas, colons, or full stops.
+A new lesson is published every day, filling whichever track is furthest behind, and a short note goes out when it is ready to read. The site only ever shows published lessons. The list of upcoming topics stays private, so there is always something new to find rather than a roadmap to skim ahead.
